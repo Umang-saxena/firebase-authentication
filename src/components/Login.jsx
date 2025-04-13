@@ -1,10 +1,11 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useFormik } from "formik";
-import {Link} from "react-router-dom";
+import {Link,useNavigate} from "react-router-dom";
 // import  {useAuth} from "../contexts/authContext/index.jsx";
-import { auth } from "../firebase/firebase.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../firebase/firebase.js";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+import {useAuth} from "../contexts/AuthContext.jsx"
 import * as Yup from "yup";
 import { useState } from "react";
 
@@ -17,13 +18,17 @@ const initialValues = {
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
-  password: Yup.string().required("Required"),
+  password: Yup.string().required("Required")
 });
 
 
-const Register = () => {
+const Login = () => {
+  const {login} = useAuth();
+  const navigate = useNavigate();
+
 
   const [firebaseError, setFirebaseError] = useState(null);
+  const[loading, setLoading] = useState(false)
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -31,16 +36,15 @@ const Register = () => {
     onSubmit: async (values) => {
       setFirebaseError(null);
       try {
-        await signInWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-        console.log("User logged in successfully:");
-        window.location.href = "/admin";
-        const user = auth.currentUser;
-        console.log(user);
-        console.log("User created successfully:");
+        setLoading(true);
+        await login(values.email, values.password).then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          console.log("User Login successfully:");
+          navigate("/");
+        })
+        setLoading(false);
       } catch (error) {
         setFirebaseError(error.message);
         // console.log(firebaseError);
@@ -53,7 +57,7 @@ const Register = () => {
 
   return (
     <Form onSubmit={formik.handleSubmit}>
-      <h2>Login Now</h2>
+      <h2>Log In</h2>
       {firebaseError && (
     <p className="text-danger fw-bold">{firebaseError}</p>
   )}
@@ -81,11 +85,12 @@ const Register = () => {
         />
         <Form.Control.Feedback type="invalid"> {formik.errors.password} </Form.Control.Feedback>
       </Form.Group>
-      <Button variant="primary" type="submit">
-        Login
+
+      <Button variant="primary" type="submit" disabled={loading}>
+        Log In
       </Button>
       <div className="mt-3 text-center">
-  <span>No Account? </span>
+  <span>Need an Account? </span>
   <Link to="/register">Sign Up</Link>
 </div>
 
@@ -93,4 +98,5 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
+

@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useFormik } from "formik";
-import {Link} from "react-router-dom";
+import {Link,useNavigate} from "react-router-dom";
 // import  {useAuth} from "../contexts/authContext/index.jsx";
 // import { auth } from "../firebase/firebase.js";
 // import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -28,9 +28,10 @@ const validationSchema = Yup.object({
 
 
 const Register = () => {
-  const {signup} = useAuth()
-
+  const {signup} = useAuth();
+  const navigate = useNavigate();
   const [firebaseError, setFirebaseError] = useState(null);
+  const[loading, setLoading] = useState(false)
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -38,13 +39,15 @@ const Register = () => {
     onSubmit: async (values) => {
       setFirebaseError(null);
       try {
+        setLoading(true);
         await signup(values.email, values.password).then((userCredential) => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
           console.log("User created successfully:");
-          window.location.href = "/admin";
+          navigate("/");
         })
+        setLoading(false);
       } catch (error) {
         setFirebaseError(error.message);
         // console.log(firebaseError);
@@ -98,8 +101,8 @@ const Register = () => {
         <Form.Control.Feedback type="invalid"> {formik.errors.confirm_password} </Form.Control.Feedback>
       </Form.Group>
 
-      <Button variant="primary" type="submit">
-        Submit
+      <Button variant="primary" type="submit" disabled={loading}>
+        Sign Up
       </Button>
       <div className="mt-3 text-center">
   <span>Already have an account? </span>
