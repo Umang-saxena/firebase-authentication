@@ -8,7 +8,7 @@ function Admin() {
   const [error, setError] = useState(null);
   const navigate = useNavigate()
   
-  const {currentUser} = useAuth();
+  const {currentUser,logout} = useAuth();
 
 
   async function handleLogout() {
@@ -20,6 +20,7 @@ function Admin() {
       navigate("/login")
     }
     catch (error) {
+      console.log(error.message)
       setError("Failed to log out")
     }
     
