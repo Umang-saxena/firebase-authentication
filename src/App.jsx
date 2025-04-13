@@ -4,12 +4,15 @@ import Login from './components/Login'
 import Admin from './components/Admin'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AuthProvider } from './contexts/AuthContext'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
 
   return (
+
     <BrowserRouter>
+        <AuthProvider>
       <div className="App">
         <Routes>
           <Route path="/admin" element={<Admin />} />
@@ -19,6 +22,7 @@ function App() {
         </Routes>
       </div>
       
+      </AuthProvider>
     </BrowserRouter>
   )
 }

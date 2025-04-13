@@ -3,8 +3,9 @@ import Button from "react-bootstrap/Button";
 import { useFormik } from "formik";
 import {Link} from "react-router-dom";
 // import  {useAuth} from "../contexts/authContext/index.jsx";
-import { auth } from "../firebase/firebase.js";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../firebase/firebase.js";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+import {useAuth} from "../contexts/AuthContext.jsx"
 import * as Yup from "yup";
 import { useState } from "react";
 
@@ -27,6 +28,7 @@ const validationSchema = Yup.object({
 
 
 const Register = () => {
+  const {signup} = useAuth()
 
   const [firebaseError, setFirebaseError] = useState(null);
 
@@ -36,14 +38,13 @@ const Register = () => {
     onSubmit: async (values) => {
       setFirebaseError(null);
       try {
-        await createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        );
-        const user = auth.currentUser;
-        console.log(user);
-        console.log("User created successfully:");
+        await signup(values.email, values.password).then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          console.log("User created successfully:");
+          window.location.href = "/admin";
+        })
       } catch (error) {
         setFirebaseError(error.message);
         // console.log(firebaseError);
