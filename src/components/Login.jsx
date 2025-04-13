@@ -1,5 +1,6 @@
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+// import Form from "react-bootstrap/Form";
+// import Button from "react-bootstrap/Button";
+import {Card ,Button,Form} from "react-bootstrap";
 import { useFormik } from "formik";
 import {Link,useNavigate} from "react-router-dom";
 // import  {useAuth} from "../contexts/authContext/index.jsx";
@@ -23,13 +24,16 @@ const validationSchema = Yup.object({
 
 
 const Login = () => {
+  //Context from useAuth
   const {login} = useAuth();
   const navigate = useNavigate();
 
 
   const [firebaseError, setFirebaseError] = useState(null);
   const[loading, setLoading] = useState(false)
+   
 
+  //Formik Logic
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
@@ -56,45 +60,50 @@ const Login = () => {
   // console.log(formik)
 
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      <h2>Log In</h2>
-      {firebaseError && (
-    <p className="text-danger fw-bold">{firebaseError}</p>
-  )}
-      <Form.Group className="mb-3" controlId="email">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="Enter email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          isInvalid={formik.touched.email && formik.errors.email}
-        />
-        <Form.Control.Feedback type="invalid"> {formik.errors.email} </Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="password">
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          isInvalid={formik.touched.password && formik.errors.password}
-        />
-        <Form.Control.Feedback type="invalid"> {formik.errors.password} </Form.Control.Feedback>
-      </Form.Group>
+    <Card>
+      <Card.Body className="text-center mb-3 w-200 mx-auto">
+            
+      <Form onSubmit={formik.handleSubmit}>
+        <h2>Log In</h2>
+        {firebaseError && (
+      <p className="text-danger fw-bold">{firebaseError}</p>
+    )}
+        <Form.Group className="mb-3" controlId="email">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isInvalid={formik.touched.email && formik.errors.email}
+          />
+          <Form.Control.Feedback type="invalid"> {formik.errors.email} </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isInvalid={formik.touched.password && formik.errors.password}
+          />
+          <Form.Control.Feedback type="invalid"> {formik.errors.password} </Form.Control.Feedback>
+        </Form.Group>
 
-      <Button variant="primary" type="submit" disabled={loading}>
-        Log In
-      </Button>
-      <div className="mt-3 text-center">
-  <span>Need an Account? </span>
-  <Link to="/register">Sign Up</Link>
-</div>
+        <Button variant="primary" type="submit" disabled={loading}>
+          Log In
+        </Button>
+        <div className="mt-3 text-center">
+    <span>Need an Account? </span>
+    <Link to="/register">Sign Up</Link>
+  </div>
 
-    </Form>
+      </Form>
+      </Card.Body>
+    </Card>
   );
 };
 
